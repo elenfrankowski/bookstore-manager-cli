@@ -32,4 +32,15 @@ export class AutorRepository {
     }
     return rows[0]
   }
+
+  async buscarPorNome(nome: string): Promise<Autor | null> {
+    const { rows } = await this.pool.query<Autor>(
+      'SELECT id, nome FROM autor WHERE nome = $1',
+      [nome]
+    )
+    if (rows.length === 0) {
+      return null
+    }
+    return rows[0]
+  }
 }
