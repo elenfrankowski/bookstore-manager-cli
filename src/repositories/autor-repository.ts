@@ -43,4 +43,22 @@ export class AutorRepository {
     }
     return rows[0]
   }
+
+  async atualizar(id: number, nome: string): Promise<Autor | null> {
+    const { rows } = await this.pool.query<Autor>(
+      'UPDATE autor SET nome = $1 WHERE id = $2 RETURNING id, nome',
+      [nome, id]
+    )
+    if (rows.length === 0) {
+      return null
+    }
+    return rows[0]
+  }
+
+  async remover(id: number): Promise<boolean> {
+    const result = await this.pool.query('DELETE FROM autor WHERE id = $1', [
+      id
+    ])
+    return (result.rowCount ?? 0) > 0
+  }
 }
