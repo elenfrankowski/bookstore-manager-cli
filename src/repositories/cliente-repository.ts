@@ -45,4 +45,26 @@ export class ClienteRepository {
     }
     return rows[0]
   }
+
+  async atualizar(
+    id: number,
+    cliente: Omit<Cliente, 'id'>
+  ): Promise<Cliente | null> {
+    const { rows } = await this.pool.query<Cliente>(
+      'UPDATE cliente SET nome = $1, sobrenome = $2, email = $3 WHERE id = $4 RETURNING id, nome, sobrenome, email',
+      [cliente.nome, cliente.sobrenome, cliente.email, id]
+    )
+
+    if (rows.length === 0) {
+      return null
+    }
+    return rows[0]
+  }
+
+  async remover(id: number): Promise<boolean> {
+    const result = await this.pool.query('DELETE FROM cliente WHERE id = $1', [
+      id
+    ])
+    return (result.rowCount ?? 0) > 0
+  }
 }
