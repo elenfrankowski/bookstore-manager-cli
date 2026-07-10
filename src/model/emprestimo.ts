@@ -8,3 +8,12 @@ export interface Emprestimo {
   data_devolucao?: Date | null
   status: StatusEmprestimo
 }
+
+export interface EmprestimoDetalhado {
+  id: number
+  livro_titulo: string
+  cliente_nome: string
+  data_emprestimo: Date
+  data_devolucao: Date | null
+  status: StatusEmprestimo
+}
