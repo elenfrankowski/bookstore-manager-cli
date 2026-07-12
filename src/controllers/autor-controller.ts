@@ -64,6 +64,19 @@ export class AutorController {
     }
   }
 
+  private async exibirListaAutores(): Promise<void> {
+    const autores = await this.listarAutoresUseCase.executar()
+    console.log('\n--- LISTA DE AUTORES ---')
+    if (autores.length === 0) {
+      console.log('Nenhum autor cadastrado.')
+    } else {
+      for (const autor of autores) {
+        console.log(`ID: ${String(autor.id)} | Nome: ${autor.nome}`)
+      }
+    }
+    console.log('')
+  }
+
   private async criar(): Promise<void> {
     const nome = await this.leitor.question('Nome do autor: ')
     const autor = await this.criarAutorUseCase.executar(nome)
@@ -74,26 +87,20 @@ export class AutorController {
   }
 
   private async listar(): Promise<void> {
-    const autores = await this.listarAutoresUseCase.executar()
-    console.log('\n--- LISTA DE AUTORES ---')
-    if (autores.length === 0) {
-      console.log('Nenhum autor cadastrado.')
-    } else {
-      for (const autor of autores) {
-        console.log(`ID: ${String(autor.id)} | Nome: ${autor.nome}`)
-      }
-    }
-    await this.leitor.question('\nPressione ENTER para continuar...')
+    await this.exibirListaAutores()
+    await this.leitor.question('Pressione ENTER para continuar...')
   }
 
   private async buscar(): Promise<void> {
-    const idTexto = await this.leitor.question('ID do autor: ')
+    await this.exibirListaAutores()
+    const idTexto = await this.leitor.question('ID do autor a buscar: ')
     const autor = await this.buscarAutorUseCase.executar(Number(idTexto))
     console.log(`\nID: ${String(autor.id)} | Nome: ${autor.nome}`)
     await this.leitor.question('Pressione ENTER para continuar...')
   }
 
   private async atualizar(): Promise<void> {
+    await this.exibirListaAutores()
     const idTexto = await this.leitor.question('ID do autor a atualizar: ')
     const novoNome = await this.leitor.question('Novo nome: ')
     const autor = await this.atualizarAutorUseCase.executar(
@@ -107,6 +114,7 @@ export class AutorController {
   }
 
   private async remover(): Promise<void> {
+    await this.exibirListaAutores()
     const idTexto = await this.leitor.question('ID do autor a remover: ')
     await this.removerAutorUseCase.executar(Number(idTexto))
     console.log('\nAutor removido com sucesso!')
