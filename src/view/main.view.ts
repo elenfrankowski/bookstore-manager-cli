@@ -1,10 +1,12 @@
 import { LeitorTerminal } from '../@common/utils/leitor-terminal'
 import { AutorController } from '../controllers/autor-controller'
+import { ClienteController } from '../controllers/cliente-controller'
 
 export class MainView {
   constructor(
     private readonly leitor: LeitorTerminal,
-    private readonly autorController: AutorController
+    private readonly autorController: AutorController,
+    private readonly clienteController: ClienteController
   ) {}
 
   async exibirMenuPrincipal(): Promise<void> {
@@ -32,7 +34,7 @@ export class MainView {
           await this.autorController.exibirMenu()
           break
         case '2':
-          await this.menuClientes()
+          await this.clienteController.exibirMenu()
           break
         case '3':
           await this.menuLivros()
@@ -58,14 +60,6 @@ export class MainView {
           break
       }
     }
-  }
-
-  private async menuClientes() {
-    console.clear()
-    console.log('--- GERENCIAR CLIENTES ---')
-    await this.leitor.question(
-      '\nMenu em desenvolvimento... Pressione ENTER para voltar.'
-    )
   }
 
   private async menuLivros() {

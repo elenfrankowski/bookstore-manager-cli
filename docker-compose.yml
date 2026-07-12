@@ -12,6 +12,7 @@ services:
       - '5433:5432'
     volumes:
       - sctec-bookstore-postgres:/var/lib/postgresql/data
+      - ./src/@common/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
 volumes:
   sctec-bookstore-postgres:
