@@ -4,11 +4,11 @@ import { Pool } from 'pg'
 dotenv.config()
 
 export const pool = new Pool({
-  user: globalThis.process.env.DB_USER ?? 'postgres',
+  user: globalThis.process.env.DB_USER ?? 'admin',
   host: globalThis.process.env.DB_HOST ?? 'localhost',
-  database: globalThis.process.env.DB_NAME ?? 'sctec',
+  database: globalThis.process.env.DB_NAME ?? 'bookstore-db',
   password: globalThis.process.env.DB_PASSWORD ?? '',
-  port: Number(globalThis.process.env.DB_PORT ?? 5432),
+  port: Number(globalThis.process.env.DB_PORT ?? 5433),
   max: 10,
   min: 2
 })
