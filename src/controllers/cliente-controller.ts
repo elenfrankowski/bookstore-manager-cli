@@ -113,9 +113,32 @@ export class ClienteController {
   private async atualizar(): Promise<void> {
     await this.exibirListaClientes()
     const idTexto = await this.leitor.question('ID do cliente a atualizar: ')
-    const nome = await this.leitor.question('Novo Nome: ')
-    const sobrenome = await this.leitor.question('Novo Sobrenome: ')
-    const email = await this.leitor.question('Novo E-mail: ')
+    const clienteAtual = await this.buscarClienteUseCase.executar(
+      Number(idTexto)
+    )
+
+    console.log('\n--- DADOS ATUAIS ---')
+    console.log(`Nome: ${clienteAtual.nome}`)
+    console.log(`Sobrenome: ${clienteAtual.sobrenome}`)
+    console.log(`E-mail: ${clienteAtual.email}`)
+    console.log(
+      '\n(Pressione ENTER sem digitar nada para manter o valor atual)\n'
+    )
+
+    const nomeInput = await this.leitor.question(
+      `Novo Nome [${clienteAtual.nome}]: `
+    )
+    const sobrenomeInput = await this.leitor.question(
+      `Novo Sobrenome [${clienteAtual.sobrenome}]: `
+    )
+    const emailInput = await this.leitor.question(
+      `Novo E-mail [${clienteAtual.email}]: `
+    )
+
+    const nome = nomeInput.trim() === '' ? clienteAtual.nome : nomeInput
+    const sobrenome =
+      sobrenomeInput.trim() === '' ? clienteAtual.sobrenome : sobrenomeInput
+    const email = emailInput.trim() === '' ? clienteAtual.email : emailInput
 
     const cliente = await this.atualizarClienteUseCase.executar(
       Number(idTexto),
