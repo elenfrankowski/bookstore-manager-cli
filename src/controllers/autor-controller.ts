@@ -102,7 +102,19 @@ export class AutorController {
   private async atualizar(): Promise<void> {
     await this.exibirListaAutores()
     const idTexto = await this.leitor.question('ID do autor a atualizar: ')
-    const novoNome = await this.leitor.question('Novo nome: ')
+    const autorAtual = await this.buscarAutorUseCase.executar(Number(idTexto))
+
+    console.log('\n--- DADOS ATUAIS ---')
+    console.log(`Nome: ${autorAtual.nome}`)
+    console.log(
+      '\n(Pressione ENTER sem digitar nada para manter o valor atual)\n'
+    )
+
+    const nomeInput = await this.leitor.question(
+      `Novo Nome [${autorAtual.nome}]: `
+    )
+    const novoNome = nomeInput.trim() === '' ? autorAtual.nome : nomeInput
+
     const autor = await this.atualizarAutorUseCase.executar(
       Number(idTexto),
       novoNome
