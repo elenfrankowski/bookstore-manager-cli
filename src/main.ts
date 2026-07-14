@@ -2,9 +2,11 @@ import { initDatabase, pool } from './@common/database/database'
 import { LeitorTerminal } from './@common/utils/leitor-terminal'
 import { AutorController } from './controllers/autor-controller'
 import { ClienteController } from './controllers/cliente-controller'
+import { EmprestimoController } from './controllers/emprestimo-controller'
 import { LivroController } from './controllers/livro-controller'
 import { AutorRepository } from './repositories/autor-repository'
 import { ClienteRepository } from './repositories/cliente-repository'
+import { EmprestimoRepository } from './repositories/emprestimo-repository'
 import { LivroRepository } from './repositories/livro-repository'
 import { AtualizarAutorUseCase } from './usecase/autor/atualizar-autor-use-case'
 import { BuscarAutorUseCase } from './usecase/autor/buscar-autor-use-case'
@@ -16,6 +18,8 @@ import { BuscarClienteUseCase } from './usecase/cliente/buscar-cliente-use-case'
 import { CriarClienteUseCase } from './usecase/cliente/criar-cliente-use-case'
 import { ListarClientesUseCase } from './usecase/cliente/listar-clientes-use-case'
 import { RemoverClienteUseCase } from './usecase/cliente/remover-cliente-use-case'
+import { RealizarEmprestimoUseCase } from './usecase/emprestimo/realizar-emprestimo-use-case'
+import { RegistrarDevolucaoUseCase } from './usecase/emprestimo/registrar-devolucao-use-case'
 import { AtualizarLivroUseCase } from './usecase/livro/atualizar-livro-use-case'
 import { BuscarLivroUseCase } from './usecase/livro/buscar-livro-use-case'
 import { CriarLivroUseCase } from './usecase/livro/criar-livro-use-case'
@@ -86,11 +90,31 @@ async function iniciar() {
       listarAutoresUseCase
     )
 
+    const emprestimoRepository = new EmprestimoRepository(pool)
+    const realizarEmprestimoUseCase = new RealizarEmprestimoUseCase(
+      emprestimoRepository,
+      clienteRepository,
+      livroRepository
+    )
+    const registrarDevolucaoUseCase = new RegistrarDevolucaoUseCase(
+      emprestimoRepository,
+      livroRepository
+    )
+
+    const emprestimoController = new EmprestimoController(
+      leitor,
+      realizarEmprestimoUseCase,
+      registrarDevolucaoUseCase,
+      listarClientesUseCase,
+      listarLivrosUseCase
+    )
+
     const mainView = new MainView(
       leitor,
       autorController,
       clienteController,
-      livroController
+      livroController,
+      emprestimoController
     )
     await mainView.exibirMenuPrincipal()
   } catch (error) {

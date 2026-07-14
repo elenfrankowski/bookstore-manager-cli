@@ -1,6 +1,7 @@
 import { LeitorTerminal } from '../@common/utils/leitor-terminal'
 import { AutorController } from '../controllers/autor-controller'
 import { ClienteController } from '../controllers/cliente-controller'
+import { EmprestimoController } from '../controllers/emprestimo-controller'
 import { LivroController } from '../controllers/livro-controller'
 
 export class MainView {
@@ -8,7 +9,8 @@ export class MainView {
     private readonly leitor: LeitorTerminal,
     private readonly autorController: AutorController,
     private readonly clienteController: ClienteController,
-    private readonly livroController: LivroController
+    private readonly livroController: LivroController,
+    private readonly emprestimoController: EmprestimoController
   ) {}
 
   async exibirMenuPrincipal(): Promise<void> {
@@ -22,9 +24,8 @@ export class MainView {
       console.log('1. Gerenciar Autores')
       console.log('2. Gerenciar Clientes')
       console.log('3. Gerenciar Livros')
-      console.log('4. Realizar Empréstimo')
-      console.log('5. Registrar Devolução')
-      console.log('6. Relatórios Avançados')
+      console.log('4. Gerenciar Empréstimos')
+      console.log('5. Relatórios Avançados')
       console.log('0. Sair do Sistema')
       console.log('====================================')
       console.log('')
@@ -42,12 +43,9 @@ export class MainView {
           await this.livroController.exibirMenu()
           break
         case '4':
-          await this.menuEmprestimos()
+          await this.emprestimoController.exibirMenu()
           break
         case '5':
-          await this.menuDevolucoes()
-          break
-        case '6':
           await this.menuRelatorios()
           break
         case '0':
@@ -62,22 +60,6 @@ export class MainView {
           break
       }
     }
-  }
-
-  private async menuEmprestimos() {
-    console.clear()
-    console.log('--- REALIZAR EMPRÉSTIMO ---')
-    await this.leitor.question(
-      '\nMenu em desenvolvimento... Pressione ENTER para voltar.'
-    )
-  }
-
-  private async menuDevolucoes() {
-    console.clear()
-    console.log('--- REGISTRAR DEVOLUÇÃO ---')
-    await this.leitor.question(
-      '\nMenu em desenvolvimento... Pressione ENTER para voltar.'
-    )
   }
 
   private async menuRelatorios() {
