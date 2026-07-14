@@ -3,6 +3,7 @@ import { AutorController } from '../controllers/autor-controller'
 import { ClienteController } from '../controllers/cliente-controller'
 import { EmprestimoController } from '../controllers/emprestimo-controller'
 import { LivroController } from '../controllers/livro-controller'
+import { RelatorioController } from '../controllers/relatorio-controller'
 
 export class MainView {
   constructor(
@@ -10,7 +11,8 @@ export class MainView {
     private readonly autorController: AutorController,
     private readonly clienteController: ClienteController,
     private readonly livroController: LivroController,
-    private readonly emprestimoController: EmprestimoController
+    private readonly emprestimoController: EmprestimoController,
+    private readonly relatorioController: RelatorioController
   ) {}
 
   async exibirMenuPrincipal(): Promise<void> {
@@ -46,7 +48,7 @@ export class MainView {
           await this.emprestimoController.exibirMenu()
           break
         case '5':
-          await this.menuRelatorios()
+          await this.relatorioController.exibirMenu()
           break
         case '0':
           console.log('\nEncerrando o sistema... Até logo!')
@@ -60,13 +62,5 @@ export class MainView {
           break
       }
     }
-  }
-
-  private async menuRelatorios() {
-    console.clear()
-    console.log('--- RELATÓRIOS AVANÇADOS ---')
-    await this.leitor.question(
-      '\nMenu em desenvolvimento... Pressione ENTER para voltar.'
-    )
   }
 }

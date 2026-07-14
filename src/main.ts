@@ -4,10 +4,12 @@ import { AutorController } from './controllers/autor-controller'
 import { ClienteController } from './controllers/cliente-controller'
 import { EmprestimoController } from './controllers/emprestimo-controller'
 import { LivroController } from './controllers/livro-controller'
+import { RelatorioController } from './controllers/relatorio-controller'
 import { AutorRepository } from './repositories/autor-repository'
 import { ClienteRepository } from './repositories/cliente-repository'
 import { EmprestimoRepository } from './repositories/emprestimo-repository'
 import { LivroRepository } from './repositories/livro-repository'
+import { RelatorioRepository } from './repositories/relatorio-repository'
 import { AtualizarAutorUseCase } from './usecase/autor/atualizar-autor-use-case'
 import { BuscarAutorUseCase } from './usecase/autor/buscar-autor-use-case'
 import { CriarAutorUseCase } from './usecase/autor/criar-autor-use-case'
@@ -25,6 +27,13 @@ import { BuscarLivroUseCase } from './usecase/livro/buscar-livro-use-case'
 import { CriarLivroUseCase } from './usecase/livro/criar-livro-use-case'
 import { ListarLivrosUseCase } from './usecase/livro/listar-livros-use-case'
 import { RemoverLivroUseCase } from './usecase/livro/remover-livro-use-case'
+import { ObterClientesComEmprestimosAtivosUseCase } from './usecase/relatorio/obter-clientes-com-emprestimos-ativos-use-case'
+import { ObterClientesMaisAtivosUseCase } from './usecase/relatorio/obter-clientes-mais-ativos-use-case'
+import { ObterEmprestimosPorLivroUseCase } from './usecase/relatorio/obter-emprestimos-por-livro-use-case'
+import { ObterLivrosDisponiveisUseCase } from './usecase/relatorio/obter-livros-disponiveis-use-case'
+import { ObterLivrosEmprestadosUseCase } from './usecase/relatorio/obter-livros-emprestados-use-case'
+import { ObterLivrosMaisEmprestadosUseCase } from './usecase/relatorio/obter-livros-mais-emprestados-use-case'
+import { ObterLivrosPorAutorUseCase } from './usecase/relatorio/obter-livros-por-autor-use-case'
 import { MainView } from './view/main.view'
 
 async function iniciar() {
@@ -33,6 +42,7 @@ async function iniciar() {
 
     const leitor = new LeitorTerminal()
 
+    // --- AUTORES ---
     const autorRepository = new AutorRepository(pool)
     const criarAutorUseCase = new CriarAutorUseCase(autorRepository)
     const listarAutoresUseCase = new ListarAutoresUseCase(autorRepository)
@@ -49,6 +59,7 @@ async function iniciar() {
       removerAutorUseCase
     )
 
+    // --- CLIENTES ---
     const clienteRepository = new ClienteRepository(pool)
     const criarClienteUseCase = new CriarClienteUseCase(clienteRepository)
     const listarClientesUseCase = new ListarClientesUseCase(clienteRepository)
@@ -67,6 +78,7 @@ async function iniciar() {
       removerClienteUseCase
     )
 
+    // --- LIVROS ---
     const livroRepository = new LivroRepository(pool)
     const criarLivroUseCase = new CriarLivroUseCase(
       livroRepository,
@@ -90,6 +102,7 @@ async function iniciar() {
       listarAutoresUseCase
     )
 
+    // --- EMPRÉSTIMOS ---
     const emprestimoRepository = new EmprestimoRepository(pool)
     const realizarEmprestimoUseCase = new RealizarEmprestimoUseCase(
       emprestimoRepository,
@@ -109,12 +122,47 @@ async function iniciar() {
       listarLivrosUseCase
     )
 
+    // --- RELATÓRIOS ---
+    const relatorioRepository = new RelatorioRepository(pool)
+    const obterLivrosDisponiveisUseCase = new ObterLivrosDisponiveisUseCase(
+      relatorioRepository
+    )
+    const obterLivrosEmprestadosUseCase = new ObterLivrosEmprestadosUseCase(
+      relatorioRepository
+    )
+    const obterLivrosPorAutorUseCase = new ObterLivrosPorAutorUseCase(
+      relatorioRepository
+    )
+    const obterEmprestimosPorLivroUseCase = new ObterEmprestimosPorLivroUseCase(
+      relatorioRepository
+    )
+    const obterClientesComEmprestimosAtivosUseCase =
+      new ObterClientesComEmprestimosAtivosUseCase(relatorioRepository)
+    const obterLivrosMaisEmprestadosUseCase =
+      new ObterLivrosMaisEmprestadosUseCase(relatorioRepository)
+    const obterClientesMaisAtivosUseCase = new ObterClientesMaisAtivosUseCase(
+      relatorioRepository
+    )
+
+    const relatorioController = new RelatorioController(
+      leitor,
+      obterLivrosDisponiveisUseCase,
+      obterLivrosEmprestadosUseCase,
+      obterLivrosPorAutorUseCase,
+      obterEmprestimosPorLivroUseCase,
+      obterClientesComEmprestimosAtivosUseCase,
+      obterLivrosMaisEmprestadosUseCase,
+      obterClientesMaisAtivosUseCase
+    )
+
+    // --- VIEW PRINCIPAL ---
     const mainView = new MainView(
       leitor,
       autorController,
       clienteController,
       livroController,
-      emprestimoController
+      emprestimoController,
+      relatorioController
     )
     await mainView.exibirMenuPrincipal()
   } catch (error) {
