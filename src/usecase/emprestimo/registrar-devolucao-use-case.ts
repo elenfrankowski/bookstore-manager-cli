@@ -1,12 +1,8 @@
 import { Emprestimo } from '../../model/emprestimo'
 import { EmprestimoRepository } from '../../repositories/emprestimo-repository'
-import { LivroRepository } from '../../repositories/livro-repository'
 
 export class RegistrarDevolucaoUseCase {
-  constructor(
-    private readonly emprestimoRepository: EmprestimoRepository,
-    private readonly livroRepository: LivroRepository
-  ) {}
+  constructor(private readonly emprestimoRepository: EmprestimoRepository) {}
 
   async executar(clienteId: number, livroId: number): Promise<Emprestimo> {
     if (!clienteId || clienteId <= 0) {
@@ -28,30 +24,10 @@ export class RegistrarDevolucaoUseCase {
     }
 
     const dataHoje = new Date()
-    const emprestimoDevolvido =
-      await this.emprestimoRepository.registrarDevolucao(
-        emprestimoAtivo.id,
-        dataHoje
-      )
-    if (!emprestimoDevolvido) {
-      throw new Error('Não foi possível registrar a devolução do empréstimo.')
-    }
-
-    const livro = await this.livroRepository.buscarPorId(livroId)
-    if (!livro?.id) {
-      throw new Error(
-        'Livro associado ao empréstimo não foi encontrado para atualização do estoque.'
-      )
-    }
-
-    await this.livroRepository.atualizar(livro.id, {
-      titulo: livro.titulo,
-      isbn: livro.isbn,
-      autor_id: livro.autor_id,
-      total_exemplares: livro.total_exemplares,
-      disponiveis: livro.disponiveis + 1
-    })
-
-    return emprestimoDevolvido
+    return this.emprestimoRepository.registrarDevolucaoComReposicaoEstoque(
+      emprestimoAtivo.id,
+      livroId,
+      dataHoje
+    )
   }
 }
