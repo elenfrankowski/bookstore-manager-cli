@@ -49,19 +49,6 @@ export class RealizarEmprestimoUseCase {
       )
     }
 
-    const novoEmprestimo = await this.emprestimoRepository.criar({
-      cliente_id: clienteId,
-      livro_id: livroId
-    })
-
-    await this.livroRepository.atualizar(livro.id, {
-      titulo: livro.titulo,
-      isbn: livro.isbn,
-      autor_id: livro.autor_id,
-      total_exemplares: livro.total_exemplares,
-      disponiveis: livro.disponiveis - 1
-    })
-
-    return novoEmprestimo
+    return this.emprestimoRepository.criarComBaixaEstoque(clienteId, livroId)
   }
 }
