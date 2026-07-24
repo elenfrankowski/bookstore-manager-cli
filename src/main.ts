@@ -110,8 +110,7 @@ async function iniciar() {
       livroRepository
     )
     const registrarDevolucaoUseCase = new RegistrarDevolucaoUseCase(
-      emprestimoRepository,
-      livroRepository
+      emprestimoRepository
     )
 
     const emprestimoController = new EmprestimoController(
